@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff8fa;
+    color: #d1a1c7;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+input, select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+}
