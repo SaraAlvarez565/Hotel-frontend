@@ -3,225 +3,180 @@ import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 export default function Favorites() {
-
   const [favorites, setFavorites] = useState([]);
-
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
+    if (!user) return navigate("/login");
     load();
   }, []);
 
   const load = async () => {
-
-    const res = await api.get(`/favorites/user/${user.id}`);
-
-    setFavorites(res.data);
+    try {
+      const res = await api.get(`/favorites/user/${user.id}`);
+      setFavorites(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const remove = async (productId) => {
-
     await api.post("/favorites", {
       user: { id: user.id },
       product: { id: productId }
     });
-
     load();
   };
 
   return (
-
     <div style={styles.page}>
-
-      {/* HERO */}
-
-      <div style={styles.hero}>
-
-        <h1 style={styles.heroTitle}>
-          ❤️ Tus lugares favoritos
-        </h1>
-
-        <p style={styles.heroText}>
-          Guarda los alojamientos que más te gusten y vuelve a ellos fácilmente.
+      <div style={styles.header}>
+        <h1 style={styles.title}>Tus favoritos</h1>
+        <p style={styles.subtitle}>
+          Lugares guardados para tus próximas estancias
         </p>
-
       </div>
 
-      {/* EMPTY */}
-
       {favorites.length === 0 && (
-
-        <div style={styles.emptyBox}>
-
-          <h2>No tienes favoritos aún ✨</h2>
-
-          <p>
-            Explora alojamientos y guarda tus favoritos.
-          </p>
-
+        <div style={styles.empty}>
+          <h2>No tienes favoritos aún</h2>
+          <p>Guarda alojamientos que te gusten para verlos aquí.</p>
         </div>
-
       )}
 
-      {/* GRID */}
-
       <div style={styles.grid}>
-
-        {favorites.map(f => (
-
-          <div
-            key={f.id}
-            style={styles.card}
-          >
-
-            <div style={styles.imageContainer}>
-
+        {favorites.map((f) => (
+          <div key={f.id} style={styles.card}>
+            <div style={styles.imgBox}>
               <img
                 src={f.product.imageUrl || "https://picsum.photos/500"}
                 alt={f.product.name}
-                style={styles.image}
+                style={styles.img}
               />
-
               <button
-                style={styles.favoriteBadge}
+                style={styles.heart}
                 onClick={() => remove(f.product.id)}
               >
-                ❤️
+                ♥
               </button>
-
             </div>
 
             <div style={styles.content}>
-
-              <h2 style={styles.name}>
-                {f.product.name}
-              </h2>
-
-              <p style={styles.description}>
-                {f.product.description}
+              <h3 style={styles.name}>{f.product.name}</h3>
+              <p style={styles.desc}>
+                {f.product.description || "Sin descripción"}
               </p>
-
               <button
-                style={styles.viewButton}
+                style={styles.btn}
                 onClick={() => navigate(`/product/${f.product.id}`)}
               >
-                Ver alojamiento
+                Ver detalle
               </button>
-
             </div>
-
           </div>
-
         ))}
-
       </div>
-
     </div>
-
   );
 }
 
+
 const styles = {
-
   page: {
-    marginTop: "90px",
-    padding: "30px",
-    maxWidth: "1400px",
-    marginInline: "auto"
+    minHeight: "100vh",
+    background: "#fff0f5", // rosa claro de marca
+    padding: "40px 20px",
+    fontFamily: "Arial",
+    color: "#2b2b2b"
   },
 
-  hero: {
-    background: "linear-gradient(135deg,#fff0f5,#ffe4ec)",
-    padding: "50px",
-    borderRadius: "35px",
-    marginBottom: "50px"
-  },
-
-  heroTitle: {
-    fontSize: "45px",
-    color: "#2b2b2b",
-    marginBottom: "10px"
-  },
-
-  heroText: {
-    color: "#666",
-    fontSize: "17px"
-  },
-
-  emptyBox: {
-    background: "white",
-    padding: "60px",
-    borderRadius: "30px",
+  header: {
     textAlign: "center",
-    boxShadow: "0 5px 20px rgba(0,0,0,0.06)"
+    marginBottom: 30
+  },
+
+  title: {
+    fontSize: 34,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#ff6f91" // color principal de marca
+  },
+
+  subtitle: {
+    color: "#6b6b6b"
+  },
+
+  empty: {
+    textAlign: "center",
+    padding: 40,
+    background: "#fff",
+    borderRadius: 16,
+    boxShadow: "0 10px 25px rgba(0,0,0,0.08)"
   },
 
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
-    gap: "30px"
+    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+    gap: 22
   },
 
   card: {
-    background: "white",
-    borderRadius: "30px",
+    background: "#fff",
+    borderRadius: 18,
     overflow: "hidden",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-    transition: "0.3s"
+    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+    transition: "transform 0.2s ease"
   },
 
-  imageContainer: {
+  imgBox: {
     position: "relative"
   },
 
-  image: {
+  img: {
     width: "100%",
-    height: "260px",
+    height: 180,
     objectFit: "cover"
   },
 
-  favoriteBadge: {
+  heart: {
     position: "absolute",
-    top: "15px",
-    right: "15px",
-    width: "45px",
-    height: "45px",
-    borderRadius: "50%",
+    top: 10,
+    right: 10,
+    background: "rgba(255,255,255,0.9)",
     border: "none",
-    background: "white",
+    borderRadius: "50%",
+    padding: "8px 10px",
     cursor: "pointer",
-    fontSize: "20px",
-    boxShadow: "0 5px 15px rgba(0,0,0,0.15)"
+    fontSize: 16,
+    color: "#ff6f91" // corazón rosado
   },
 
   content: {
-    padding: "25px"
+    padding: 15
   },
 
   name: {
-    marginBottom: "10px",
+    fontSize: 18,
+    marginBottom: 6,
     color: "#2b2b2b"
   },
 
-  description: {
-    color: "#777",
-    lineHeight: "1.6",
-    marginBottom: "25px"
+  desc: {
+    fontSize: 13,
+    color: "#666",
+    marginBottom: 12
   },
 
-  viewButton: {
+  btn: {
     width: "100%",
-    padding: "15px",
-    border: "none",
-    borderRadius: "15px",
-    background: "linear-gradient(135deg,#ff6f91,#ff8fab)",
-    color: "white",
-    fontWeight: "bold",
+    padding: "10px",
+    borderRadius: 10,
+    border: "1px solid #ff6f91",
+    background: "#fff0f5", // rosa claro
+    color: "#ff6f91",
     cursor: "pointer",
-    fontSize: "15px",
-    boxShadow: "0 8px 20px rgba(255,111,145,0.25)"
+    fontWeight: "bold",
+    transition: "all 0.2s",
   }
-
 };

@@ -34,10 +34,13 @@ export default function Login() {
       alert("Login correcto");
 
       window.location.href = "/";
-      
-    } catch {
 
-      alert("Credenciales incorrectas");
+    } catch (err) {
+
+      alert(
+        err.response?.data?.error ||
+        "Error al iniciar sesión"
+      );
 
     }
   };

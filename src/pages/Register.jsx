@@ -13,6 +13,10 @@ export default function Register() {
 
   const submit = async () => {
 
+    if (!name || !lastname || !email || !password) {
+      alert("Completa todos los campos");
+      return;
+    }
 
     try {
 
@@ -27,9 +31,12 @@ export default function Register() {
 
       navigate("/login");
 
-    } catch {
+    } catch (err) {
 
-      alert("Error al registrar");
+      alert(
+        err.response?.data?.error ||
+        "Error al registrar"
+      );
 
     }
   };
