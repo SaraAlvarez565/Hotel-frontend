@@ -33,8 +33,8 @@ export default function Login() {
 
       alert("Login correcto");
 
-      navigate("/");
-
+      window.location.href = "/";
+      
     } catch {
 
       alert("Credenciales incorrectas");

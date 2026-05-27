@@ -14,15 +14,6 @@ export default function Register() {
   const submit = async () => {
 
 
-    const logout = () => {
-
-      localStorage.removeItem("user");
-
-      navigate("/");
-
-      window.location.reload();
-    };
-
     try {
 
       await register({

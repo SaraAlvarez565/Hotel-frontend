@@ -1,5 +1,5 @@
-import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Header() {
 
@@ -7,21 +7,13 @@ export default function Header() {
 
   const [user, setUser] = useState(null);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  {
-    user?.role === "ADMIN" && (
-      <Link to="/admin">Admin</Link>
-    )
-  }
-
   useEffect(() => {
 
-    const storedUser = localStorage.getItem("user");
+    const storedUser = JSON.parse(
+      localStorage.getItem("user")
+    );
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    setUser(storedUser);
 
   }, []);
 
@@ -29,18 +21,14 @@ export default function Header() {
 
     localStorage.removeItem("user");
 
-    navigate("/login");
+    setUser(null);
 
-    window.location.reload();
+    navigate("/login");
   };
 
-
-
   return (
-
     <header style={styles.header}>
 
-      {/* LOGO */}
       <div
         onClick={() => navigate("/")}
         style={styles.logo}
@@ -48,7 +36,6 @@ export default function Header() {
         🌸 StayBloom
       </div>
 
-      {/* NAV */}
       <nav style={styles.nav}>
 
         <Link to="/" style={styles.link}>
@@ -61,23 +48,14 @@ export default function Header() {
           </Link>
         )}
 
-        {user && (
-          <Link to="/history" style={styles.link}>
-            Reservas
-          </Link>
-        )}
-
-        {/* ADMIN */}
         {user?.role === "ADMIN" && (
-          <Link to="/admin" style={styles.adminLink}>
+          <Link to="/admin" style={styles.link}>
             Admin
           </Link>
         )}
 
-        {/* NO LOGUEADO */}
         {!user ? (
           <>
-
             <button
               onClick={() => navigate("/login")}
               style={styles.loginBtn}
@@ -91,12 +69,11 @@ export default function Header() {
             >
               Register
             </button>
-
           </>
         ) : (
+          <div style={styles.userBox}>
 
-          <>
-            <span style={styles.userName}>
+            <span>
               Hola, {user.name}
             </span>
 
@@ -106,7 +83,8 @@ export default function Header() {
             >
               Logout
             </button>
-          </>
+
+          </div>
         )}
 
       </nav>
@@ -121,7 +99,7 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "14px 20px",
+    padding: "14px 25px",
     background: "white",
     position: "fixed",
     top: 0,
@@ -129,8 +107,7 @@ const styles = {
     right: 0,
     zIndex: 1000,
     boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
-    flexWrap: "wrap",
-    gap: "10px"
+    flexWrap: "wrap"
   },
 
   logo: {
@@ -143,7 +120,7 @@ const styles = {
   nav: {
     display: "flex",
     alignItems: "center",
-    gap: "10px",
+    gap: "15px",
     flexWrap: "wrap"
   },
 
@@ -153,41 +130,36 @@ const styles = {
     fontWeight: "500"
   },
 
-  adminLink: {
-    textDecoration: "none",
-    color: "#ff4d6d",
-    fontWeight: "bold"
-  },
-
   loginBtn: {
-    border: "none",
     background: "#ff6f91",
     color: "white",
-    padding: "10px 16px",
+    border: "none",
+    padding: "10px 15px",
     borderRadius: "10px",
     cursor: "pointer"
   },
 
   registerBtn: {
-    border: "none",
     background: "#ffe4ec",
-    color: "#333",
-    padding: "10px 16px",
+    border: "none",
+    padding: "10px 15px",
     borderRadius: "10px",
     cursor: "pointer"
   },
 
   logoutBtn: {
-    border: "none",
-    background: "#2b2b2b",
+    background: "#ff4d6d",
     color: "white",
-    padding: "10px 16px",
+    border: "none",
+    padding: "10px 14px",
     borderRadius: "10px",
     cursor: "pointer"
   },
 
-  userName: {
-    color: "#555",
-    fontWeight: "500"
+  userBox: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
   }
 };
+
