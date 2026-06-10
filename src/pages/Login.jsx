@@ -25,10 +25,14 @@ export default function Login() {
         email,
         password
       });
+      const user = {
+        ...res.data,
+        role: res.data.role.replace("ROLE_", "")
+      };
 
       localStorage.setItem(
         "user",
-        JSON.stringify(res.data)
+        JSON.stringify(user)
       );
 
       alert("Login correcto");

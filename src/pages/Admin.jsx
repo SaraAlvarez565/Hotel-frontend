@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { Link } from "react-router-dom";
 
 export default function Admin() {
 
@@ -28,13 +29,17 @@ export default function Admin() {
 
   const create = async () => {
 
-    try {
+    if (!name.trim() || !description.trim() || !categoryId) {
+      alert("Completa todos los campos");
+      return;
+    }
 
+    try {
       await api.post("/products", {
         name,
         description,
         imageUrl,
-        category: { id: categoryId }
+        categoryId: Number(categoryId)
       });
 
       setName("");
@@ -44,7 +49,8 @@ export default function Admin() {
 
       load();
 
-    } catch {
+    } catch (e) {
+      console.log(e);
       alert("Error al crear producto");
     }
   };
@@ -57,137 +63,46 @@ export default function Admin() {
       console.log(e);
       alert("Error eliminando producto");
     }
-
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (!user || user.role !== "ADMIN") {
-      return (
-        <div style={{ marginTop: "120px", textAlign: "center" }}>
-          <h2>No autorizado</h2>
-        </div>
-      );
-    }
   };
 
-
   return (
-    <div>
+    <div style={styles.container}>
 
+      <h1 style={styles.title}>Panel Administrador</h1>
 
-      <div style={styles.container}>
+      <div style={styles.form}>
 
-        <h1 style={styles.title}>
-          Panel Administrador
-        </h1>
+        <input value={name} onChange={e => setName(e.target.value)} placeholder="Nombre" style={styles.input} />
+        <input value={description} onChange={e => setDescription(e.target.value)} placeholder="Descripción" style={styles.input} />
+        <input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="URL imagen" style={styles.input} />
 
-        <div style={styles.form}>
-
-          <input
-            style={styles.input}
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="Nombre"
-          />
-
-          <input
-            style={styles.input}
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            placeholder="Descripción"
-          />
-
-          <input
-            style={styles.input}
-            value={imageUrl}
-            onChange={e => setImageUrl(e.target.value)}
-            placeholder="URL imagen"
-          />
-
-          <select
-            style={styles.input}
-            onChange={e => setCategoryId(e.target.value)}
-          >
-
-            <option value="">
-              Categoría
-            </option>
-
-            {categories.map(c => (
-
-              <option
-                key={c.id}
-                value={c.id}
-              >
-                {c.name}
-              </option>
-
-            ))}
-
-          </select>
-
-
-          <div style={styles.categoriesGrid}>
-            {categories.map(c => (
-              <div
-                key={c.id}
-                onClick={() => setCategoryId(c.id)}
-                style={styles.categoryCard}
-              >
-                <img
-                  src={c.imageUrl || "https://picsum.photos/200"}
-                  style={styles.categoryImage}
-                />
-
-                <h4>{c.name}</h4>
-              </div>
-            ))}
-          </div>
-
-          <button
-            style={styles.createButton}
-            onClick={create}
-          >
-            Crear producto
-          </button>
-
-        </div>
-
-        <div style={styles.grid}>
-
-          {products.map(p => (
-
-            <div
-              key={p.id}
-              style={styles.card}
-            >
-
-              <img
-                src={p.imageUrl || "https://picsum.photos/400"}
-                alt={p.name}
-                style={styles.image}
-              />
-
-              <div style={{ padding: "20px" }}>
-
-                <h3>{p.name}</h3>
-
-                <p>{p.description}</p>
-
-                <button
-                  style={styles.deleteButton}
-                  onClick={() => remove(p.id)}
-                >
-                  Eliminar
-                </button>
-
-              </div>
-
-            </div>
-
+        <select value={categoryId} onChange={e => setCategoryId(e.target.value)} style={styles.input}>
+          <option value="">Categoría</option>
+          {categories.map(c => (
+            <option key={c.id} value={c.id}>{c.name}</option>
           ))}
+        </select>
 
-        </div>
+        <Link to="/admin/categories">Administrar Categorías</Link>
 
+        <button onClick={create} style={styles.createButton}>
+          Crear producto
+        </button>
+
+      </div>
+
+      <div style={styles.grid}>
+        {products.map(p => (
+          <div key={p.id} style={styles.card}>
+            <img src={p.imageUrl} style={styles.image} />
+            <h3>{p.name}</h3>
+            <p>{p.description}</p>
+
+            <button onClick={() => remove(p.id)} style={styles.deleteButton}>
+              Eliminar
+            </button>
+          </div>
+        ))}
       </div>
 
     </div>
@@ -195,73 +110,13 @@ export default function Admin() {
 }
 
 const styles = {
-
-  container: {
-    marginTop: "100px",
-    padding: "30px",
-    maxWidth: "1200px",
-    marginInline: "auto"
-  },
-
-  title: {
-    fontSize: "35px",
-    marginBottom: "30px"
-  },
-
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-    background: "white",
-    padding: "25px",
-    borderRadius: "20px",
-    boxShadow: "0 2px 15px rgba(0,0,0,0.08)"
-  },
-
-  input: {
-    padding: "14px",
-    borderRadius: "12px",
-    border: "1px solid #ddd"
-  },
-
-  createButton: {
-    background: "#ff6f91",
-    color: "white",
-    border: "none",
-    padding: "15px",
-    borderRadius: "12px",
-    cursor: "pointer"
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: "20px",
-    marginTop: "40px",
-    paddingBottom:"50px"
-  },
-
-  card: {
-    background: "white",
-    borderRadius: "20px",
-    overflow: "hidden",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
-  },
-
-  image: {
-    width: "100%",
-    height: "200px",
-    objectFit: "cover"
-  },
-
-  deleteButton: {
-    background: "#ff4d6d",
-    color: "white",
-    border: "none",
-    padding: "10px 15px",
-    borderRadius: "10px",
-    marginTop: "10px",
-    cursor: "pointer"
-  }
-
+  container: { marginTop: "100px", padding: "20px" },
+  title: { fontSize: "30px" },
+  form: { display: "flex", flexDirection: "column", gap: "10px" },
+  input: { padding: "10px" },
+  createButton: { background: "hotpink", color: "white", padding: "10px" },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "10px" },
+  card: { padding: "10px", border: "1px solid #ccc" },
+  image: { width: "100%" },
+  deleteButton: { background: "red", color: "white" }
 };

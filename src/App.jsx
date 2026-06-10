@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import AdminCategories from "./pages/AdminCategories";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import ProductDetail from "./pages/ProductDetail";
@@ -24,6 +24,17 @@ function App() {
             <Home />
           </Layout>
         } />
+
+        <Route
+          path="/admin/categories"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <Layout>
+                <AdminCategories />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="/product/:id" element={
           <Layout>
@@ -70,7 +81,7 @@ function App() {
             </Layout>
           </ProtectedRoute>
         } />
-        
+
         <Route path="/success" element={
           <Layout>
             <Success />

@@ -18,22 +18,50 @@ export default function AdminCategories() {
   };
 
   const create = async () => {
-    await api.post("/categories", {
-      name,
-      description,
-      imageUrl: "https://via.placeholder.com/200"
-    });
 
-    setName("");
-    setDescription("");
-    load();
+    if (!name.trim()) {
+      alert("Nombre requerido");
+      return;
+    }
+
+    try {
+
+      await api.post("/categories", {
+        name,
+        description,
+        imageUrl: "https://via.placeholder.com/200"
+      });
+
+      setName("");
+      setDescription("");
+
+      load();
+
+    } catch (error) {
+      console.error(error);
+      alert("Error al crear categoría");
+    }
   };
 
   const remove = async (id) => {
-    const ok = window.confirm("¿Eliminar categoría? Esto puede afectar productos.");
-    if (ok) {
+
+    const ok = window.confirm(
+      "¿Eliminar categoría? Esto puede afectar productos."
+    );
+
+    if (!ok) return;
+
+    try {
+
       await api.delete(`/categories/${id}`);
+
       load();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Error al eliminar categoría");
     }
   };
 
@@ -46,22 +74,49 @@ export default function AdminCategories() {
 
         <h2>Categorías</h2>
 
-        <input placeholder="Nombre" onChange={e => setName(e.target.value)} />
-        <input placeholder="Descripción" onChange={e => setDescription(e.target.value)} />
+        <input
+          placeholder="Nombre"
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
 
-        <button onClick={create}>Crear categoría</button>
+        <input
+          placeholder="Descripción"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+        />
+
+        <button onClick={create}>
+          Crear categoría
+        </button>
 
         <h3>Lista</h3>
 
         {categories.map(c => (
-          <div key={c.id} style={{ border: "1px solid #ccc", margin: "10px" }}>
+
+          <div
+            key={c.id}
+            style={{
+              border: "1px solid #ccc",
+              margin: "10px",
+              padding: "10px"
+            }}
+          >
+
             <h4>{c.name}</h4>
+
             <p>{c.description}</p>
-            <button onClick={() => remove(c.id)}>Eliminar</button>
+
+            <button onClick={() => remove(c.id)}>
+              Eliminar
+            </button>
+
           </div>
+
         ))}
 
       </div>
+
     </div>
   );
 }
