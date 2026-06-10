@@ -104,8 +104,8 @@ export default function ProductDetail() {
         await api.post("/reservations", {
             startDate,
             endDate,
-            product: { id },
-            user: { id: user.id }
+            productId: Number(id),
+            userId: user.id
         });
 
         navigate("/success");
@@ -123,8 +123,8 @@ export default function ProductDetail() {
         await api.post("/reviews", {
             rating,
             comment,
-            user: { id: user.id },
-            product: { id }
+            productId: Number(id),
+            userId: user.id
         });
 
         setComment("");
@@ -578,79 +578,79 @@ const styles = {
     },
 
     bookingWrapper: {
-    marginTop: "40px",
-    background: "white",
-    borderRadius: "30px",
-    padding: "35px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "30px",
-    flexWrap: "wrap",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.08)"
-},
+        marginTop: "40px",
+        background: "white",
+        borderRadius: "30px",
+        padding: "35px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: "30px",
+        flexWrap: "wrap",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.08)"
+    },
 
-bookingLeft: {
-    flex: 1,
-    minWidth: "280px"
-},
+    bookingLeft: {
+        flex: 1,
+        minWidth: "280px"
+    },
 
-bookingRight: {
-    display: "flex",
-    alignItems: "center"
-},
+    bookingRight: {
+        display: "flex",
+        alignItems: "center"
+    },
 
-bookingTitle: {
-    fontSize: "32px",
-    marginBottom: "10px",
-    color: "#2b2b2b"
-},
+    bookingTitle: {
+        fontSize: "32px",
+        marginBottom: "10px",
+        color: "#2b2b2b"
+    },
 
-bookingSubtitle: {
-    color: "#777",
-    marginBottom: "25px",
-    lineHeight: "1.6"
-},
+    bookingSubtitle: {
+        color: "#777",
+        marginBottom: "25px",
+        lineHeight: "1.6"
+    },
 
-inputsRow: {
-    display: "flex",
-    gap: "20px",
-    flexWrap: "wrap"
-},
+    inputsRow: {
+        display: "flex",
+        gap: "20px",
+        flexWrap: "wrap"
+    },
 
-inputBox: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px"
-},
+    inputBox: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px"
+    },
 
-label: {
-    fontSize: "14px",
-    color: "#555",
-    fontWeight: "600"
-},
+    label: {
+        fontSize: "14px",
+        color: "#555",
+        fontWeight: "600"
+    },
 
-bookingInput: {
-    padding: "14px",
-    borderRadius: "14px",
-    border: "1px solid #eee",
-    minWidth: "220px",
-    fontSize: "15px",
-    background: "#fafafa"
-},
+    bookingInput: {
+        padding: "14px",
+        borderRadius: "14px",
+        border: "1px solid #eee",
+        minWidth: "220px",
+        fontSize: "15px",
+        background: "#fafafa"
+    },
 
-reserveBigButton: {
-    background: "linear-gradient(135deg, #ff6f91, #ff8fab)",
-    color: "white",
-    border: "none",
-    padding: "18px 35px",
-    borderRadius: "18px",
-    fontSize: "16px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    boxShadow: "0 10px 20px rgba(255,111,145,0.3)",
-    transition: "0.3s"
-},
+    reserveBigButton: {
+        background: "linear-gradient(135deg, #ff6f91, #ff8fab)",
+        color: "white",
+        border: "none",
+        padding: "18px 35px",
+        borderRadius: "18px",
+        fontSize: "16px",
+        fontWeight: "bold",
+        cursor: "pointer",
+        boxShadow: "0 10px 20px rgba(255,111,145,0.3)",
+        transition: "0.3s"
+    },
 
 };
 
