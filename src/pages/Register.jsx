@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { register } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -6,10 +6,25 @@ export default function Register() {
 
   const navigate = useNavigate();
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () =>
+      window.removeEventListener("resize", handleResize);
+
+  }, []);
 
   const submit = async () => {
 
@@ -44,10 +59,15 @@ export default function Register() {
   return (
     <div style={styles.page}>
 
+      <div
+        style={{
+          ...styles.container,
+          gridTemplateColumns: isMobile
+            ? "1fr"
+            : "1fr 1fr"
+        }}
+      >
 
-      <div style={styles.container}>
-
-        {/* IZQUIERDA */}
         <div style={styles.left}>
 
           <h1 style={styles.title}>
@@ -55,7 +75,8 @@ export default function Register() {
           </h1>
 
           <p style={styles.subtitle}>
-            Crea tu cuenta y comienza a descubrir alojamientos increíbles alrededor del mundo.
+            Crea tu cuenta y comienza a descubrir
+            alojamientos increíbles alrededor del mundo.
           </p>
 
           <img
@@ -66,8 +87,12 @@ export default function Register() {
 
         </div>
 
-        {/* DERECHA */}
-        <div style={styles.right}>
+        <div
+          style={{
+            ...styles.right,
+            padding: isMobile ? "30px" : "50px"
+          }}
+        >
 
           <h2 style={styles.formTitle}>
             Crear cuenta
@@ -119,7 +144,8 @@ const styles = {
     minHeight: "100vh",
     background: "#fff5f8",
     paddingTop: "90px",
-    paddingInline: "20px"
+    paddingInline: "15px",
+    paddingBottom: "30px"
   },
 
   container: {
@@ -129,10 +155,6 @@ const styles = {
     borderRadius: "25px",
     overflow: "hidden",
     display: "grid",
-    gridTemplateColumns:
-      window.innerWidth < 768
-        ? "1fr"
-        : "1fr 1fr",
     boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
   },
 
@@ -152,8 +174,8 @@ const styles = {
 
   subtitle: {
     color: "#555",
-    marginBottom: "30px",
-    lineHeight: "1.6"
+    lineHeight: "1.7",
+    marginBottom: "25px"
   },
 
   image: {
@@ -164,7 +186,6 @@ const styles = {
   },
 
   right: {
-    padding: "50px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -172,9 +193,9 @@ const styles = {
   },
 
   formTitle: {
-    fontSize: "30px",
-    marginBottom: "10px",
-    color: "#2b2b2b"
+    fontSize: "32px",
+    color: "#2b2b2b",
+    marginBottom: "10px"
   },
 
   input: {
@@ -182,7 +203,9 @@ const styles = {
     borderRadius: "12px",
     border: "1px solid #ddd",
     fontSize: "15px",
-    outline: "none"
+    outline: "none",
+    width: "100%",
+    boxSizing: "border-box"
   },
 
   button: {
@@ -194,6 +217,8 @@ const styles = {
     color: "white",
     fontWeight: "bold",
     fontSize: "15px",
-    cursor: "pointer"
+    cursor: "pointer",
+    transition: "0.3s"
   }
+
 };
